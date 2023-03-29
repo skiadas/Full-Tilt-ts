@@ -1,0 +1,43 @@
+{
+	"name": "fulltilt-ts",
+	"title": "Full Tilt Typescript",
+	"version": "0.7.0",
+	"description": "Standalone device orientation + device motion normalization and conversion library. Converted to Typescript from the original Javascript version.",
+	"author": {
+		"name": "Haris Skiadas"
+	},
+	"keywords": [
+		"full tilt",
+		"fulltilt",
+		"deviceorientation",
+		"devicemotion",
+		"compass",
+		"quaternions",
+		"rotation",
+		"matrix",
+		"euler",
+		"tait bryan",
+		"angles"
+	],
+	"scripts": {
+		"build": "webpack",
+		"start": "webpack serve --open",
+		"test": "jest"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.21.0",
+		"@babel/core": "^7.21.3",
+		"@babel/preset-typescript": "^7.21.0",
+		"@types/jest": "^29.5.0",
+		"babel-jest": "^29.5.0",
+		"jest": "^29.5.0",
+		"jest-matcher-deep-close-to": "^3.0.2",
+		"prettier": "2.8.4",
+		"ts-jest": "^29.0.5",
+		"ts-loader": "^9.4.2",
+		"typescript": "^4.9.5",
+		"webpack": "^5.76.2",
+		"webpack-cli": "^5.0.1",
+		"webpack-dev-server": "^4.12.0"
+	}
+}
