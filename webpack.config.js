@@ -40,7 +40,7 @@ module.exports = {
 					copy: [
 						{
 							source: path.resolve(__dirname, "dist", "fulltilt.min.js"),
-							destination: path.resolve(__dirname, "examples", "fulltilt.min.js"),
+							destination: path.resolve(__dirname, "docs/examples", "fulltilt.min.js"),
 						},
 					],
 				},
