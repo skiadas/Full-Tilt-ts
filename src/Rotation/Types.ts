@@ -1,3 +1,4 @@
+export type Callback<T> = (data: T) => void;
 export type AngleSpec = { radians: number } | { degrees: number };
 export type AngleType = {
 	radians: number;
@@ -7,7 +8,11 @@ export type AngleType = {
 	tan: () => number;
 	times: (scale: number) => AngleType;
 };
-export type RawEuler = { alpha: number; beta: number; gamma: number };
+export interface RawEuler {
+	alpha: number;
+	beta: number;
+	gamma: number;
+}
 export interface RawQuaternion {
 	x: number;
 	y: number;

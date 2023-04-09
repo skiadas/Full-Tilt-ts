@@ -1,3 +1,5 @@
+const FileManagerPlugin = require("filemanager-webpack-plugin");
+
 const path = require("path");
 
 module.exports = {
@@ -12,13 +14,13 @@ module.exports = {
 		library: {
 			name: "FULLTILT",
 			type: "umd",
-      export: 'default'
+			export: "default",
 		},
 	},
-  devServer: {
-    static: ['.'],
-    https: true,
-  },
+	devServer: {
+		static: ["."],
+		https: true,
+	},
 	module: {
 		rules: [
 			{
@@ -31,4 +33,18 @@ module.exports = {
 	resolve: {
 		extensions: [".ts", ".js"],
 	},
+	plugins: [
+		new FileManagerPlugin({
+			events: {
+				onEnd: {
+					copy: [
+						{
+							source: path.resolve(__dirname, "dist", "fulltilt.min.js"),
+							destination: path.resolve(__dirname, "examples", "fulltilt.min.js"),
+						},
+					],
+				},
+			},
+		}),
+	],
 };

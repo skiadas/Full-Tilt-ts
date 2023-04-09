@@ -1,0 +1,94 @@
+<html>
+
+<head>
+  <script src="../dist/fulltilt.min.js" type="text/javascript"></script>
+</head>
+
+<body>
+  <dialog id="permissionsDialog" open="open">
+    This page requires location and device orientation information. After clicking the button you will likely be
+    prompted to provide permission.
+    <button id="confirm">Activate!</button>
+  </dialog>
+  <h1>Hello there!</h1>
+  <form>
+    <fieldset>
+      <legend>Initial values</legend>
+      <label>webkitHeading: <input id="webkitHeading" type="number" value=""></label>
+      <label>alpha: <input id="initialAlpha" type="number" value=""></label>
+      <label>beta: <input id="initialBeta" type="number" value=""></label>
+      <label>gamma: <input id="initialGamma" type="number" value=""></label>
+    </fieldset>
+    <fieldset>
+      <legend>Relative values</legend>
+      <label>angle: <input id="screenAngle" type="number" value=""></label>
+      <label>alpha: <input id="relativeAlpha" type="number" value=""></label>
+      <label>beta: <input id="relativeBeta" type="number" value=""></label>
+      <label>gamma: <input id="relativeGamma" type="number" value=""></label>
+    </fieldset>
+    <fieldset>
+      <legend>Absolute values</legend>
+      <label>alpha: <input id="absoluteAlpha" type="number" value=""></label>
+      <label>beta: <input id="absoluteBeta" type="number" value=""></label>
+      <label>gamma: <input id="absoluteGamma" type="number" value=""></label>
+    </fieldset>
+    <fieldset>
+      <legend>Screen values</legend>
+      <label>alpha: <input id="screenAlpha" type="number" value=""></label>
+      <label>beta: <input id="screenBeta" type="number" value=""></label>
+      <label>gamma: <input id="screenGamma" type="number" value=""></label>
+    </fieldset>
+  </form>
+  <div id="compass">
+    <img src="compass.jpg" width="200px" alt="Compass">
+    <p><a
+        href="https://www.freepik.com/free-vector/compass-design_917013.htm#query=compass%20svg&position=0&from_view=keyword&track=ais">Image
+        by evasplace</a> on Freepik</p>
+  </div>
+  <ul id="messageList"></ul>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.body.insertAdjacentHTML("beforeend", `<p>${window.DeviceOrientationEvent.requestPermission}</p>`);
+      document.getElementById("confirm").onclick = () => {
+        try {
+          window.FULLTILT.orientation.activate().then(e => {
+            document.getElementById("permissionsDialog").close();
+            handleSuccessfulActivation(e);
+          }).catch(e => document.body.insertAdjacentText("beforeend", "error! " + e.message));
+        } catch (e) {
+          document.body.insertAdjacentText("beforeend", "Error!: " + e.message);
+        }
+      }
+      document.body.insertAdjacentText("afterbegin", navigator.platform);
+
+    });
+    function handleSuccessfulActivation(e) {
+      document.body.insertAdjacentText("beforeend", "Success!");
+      e.listen(setFromData);
+      setFromData(e.data);
+    }
+    function setOneValue(id, v) {
+      document.querySelector(id).value = v != null ? v.toFixed(2) : "";
+    }
+    function setFromData(data) {
+      setOneValue("#screenAngle", data.angle);
+      setOneValue("#webkitHeading", data.webkitHeading);
+      setOneValue("#initialAlpha", data.initial.alpha);
+      setOneValue("#initialBeta", data.initial.beta);
+      setOneValue("#initialGamma", data.initial.gamma);
+      setOneValue("#relativeAlpha", data.relative.alpha);
+      setOneValue("#relativeBeta", data.relative.beta);
+      setOneValue("#relativeGamma", data.relative.gamma);
+      setOneValue("#absoluteAlpha", data.absolute.alpha);
+      setOneValue("#absoluteBeta", data.absolute.beta);
+      setOneValue("#absoluteGamma", data.absolute.gamma);
+      setOneValue("#screenAlpha", data.screen.alpha);
+      setOneValue("#screenBeta", data.screen.beta);
+      setOneValue("#screenGamma", data.screen.gamma);
+
+      document.querySelector("#compass img").style.transform = `rotate(${data.screen.alpha}deg)`;
+    }
+  </script>
+</body>
+
+</html>

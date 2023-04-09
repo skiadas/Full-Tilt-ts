@@ -4,7 +4,7 @@ export default class Euler implements EulerType {
     alpha: number;
     beta: number;
     gamma: number;
-    constructor(alpha: any, beta: any, gamma: any);
+    constructor(alpha: number, beta: number, gamma: number);
     rotateX(angle: AngleType): EulerType;
     rotateY(angle: AngleType): EulerType;
     rotateZ(angle: AngleType): EulerType;

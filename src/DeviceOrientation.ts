@@ -1,14 +1,7 @@
 import { radians } from "./Rotation/Angle";
 import Euler, { eulerFromAngleObject } from "./Rotation/Euler";
-import {
-	sensors,
-	startDeviceOrientationMonitoring,
-	registerForScreenOrientationChange,
-	stopDeviceOrientationMonitoring,
-	addOrientationCallback,
-} from "./Events";
 import { Quaternion } from "./Rotation/Types";
-import { screenOrientation } from "./WindowConstants";
+import * as orientation from "./orientation";
 
 export default class DeviceOrientation {
 	options: any;
@@ -31,7 +24,7 @@ export default class DeviceOrientation {
 				if (evt.alpha !== null) {
 					// do regardless of whether 'evt.absolute' is also true
 					this.alphaOffsetDevice = new Euler(evt.alpha, 0, 0);
-					this.alphaOffsetDevice.rotateZ(-screenOrientation.angle);
+					this.alphaOffsetDevice.rotateZ(-orientation.data.angle);
 
 					// Discard first {successThreshold} responses while a better compass lock is found by UA
 					if (++successCount >= successThreshold) {
@@ -66,8 +59,8 @@ export default class DeviceOrientation {
 					+evt.webkitCompassAccuracy < 50
 				) {
 					this.alphaOffsetDevice = new Euler(evt.webkitCompassHeading, 0, 0);
-					this.alphaOffsetDevice.rotateZ(screenOrientation.angle);
-					this.alphaOffsetScreen = screenOrientation.angle;
+					this.alphaOffsetDevice.rotateZ(orientation.data.angle);
+					this.alphaOffsetScreen = orientation.data.angle;
 
 					// Discard first {successThreshold} responses while a better compass lock is found by UA
 					if (++successCount >= successThreshold) {
@@ -97,15 +90,17 @@ export default class DeviceOrientation {
 	}
 
 	start(callback?: () => void) {
-		addOrientationCallback(callback);
+		if (callback) {
+			orientation.listen(callback);
+		}
 
-		registerForScreenOrientationChange();
+		orientation.registerForScreenOrientationChange();
 
-		startDeviceOrientationMonitoring();
+		orientation.start();
 	}
 
 	stop() {
-		stopDeviceOrientationMonitoring();
+		orientation.stop();
 	}
 
 	listen(callback) {
@@ -118,21 +113,21 @@ export default class DeviceOrientation {
 
 	// TODO: Simplify
 	getFixedFrameEuler() {
-		var orientationData = sensors.orientation.data || {
+		// TODO: added the "relative" but it's not necessarily right
+		// Need to rephrase the questions?
+		let orientationData = orientation.data.relative || {
 			alpha: 0,
 			beta: 0,
 			gamma: 0,
 		};
 
-		var adjustedAlpha = orientationData.alpha;
+		let adjustedAlpha = orientationData.alpha;
 
 		if (this.alphaOffsetDevice) {
-			let matrix = this.alphaOffsetDevice
+			adjustedAlpha -= this.alphaOffsetDevice
 				.toMatrix()
-				.rotateZ(radians(-this.alphaOffsetScreen));
-			const tempeuler = matrix.toEuler();
-
-			adjustedAlpha -= tempeuler.alpha;
+				.rotateZ(radians(-this.alphaOffsetScreen))
+				.toEuler().alpha;
 			return new Euler(
 				adjustedAlpha,
 				orientationData.beta,
@@ -145,7 +140,7 @@ export default class DeviceOrientation {
 
 	getScreenAdjustedQuaternion() {
 		return this.getFixedFrameQuaternion().rotateZ(
-			radians(-screenOrientation.angle)
+			radians(-orientation.data.angle)
 		);
 	}
 
@@ -155,7 +150,7 @@ export default class DeviceOrientation {
 
 	getScreenAdjustedMatrix() {
 		return this.getFixedFrameMatrix().rotateZ(
-			radians(-screenOrientation.angle)
+			radians(-orientation.data.angle)
 		);
 	}
 
@@ -163,18 +158,12 @@ export default class DeviceOrientation {
 		return this.getScreenAdjustedMatrix().toEuler();
 	}
 
+	// TODO: This method doesn't mean much as named
 	isAbsolute() {
-		if (
-			sensors.orientation.data &&
-			sensors.orientation.data.absolute === true
-		) {
-			return true;
-		}
-
-		return false;
+		return orientation.data.absolute.alpha != undefined;
 	}
 
 	getLastRawEventData() {
-		return sensors.orientation.data || {};
+		return orientation.data || {};
 	}
 }

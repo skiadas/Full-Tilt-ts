@@ -21,7 +21,7 @@ describe("Euler to Quaternion conversion", () => {
 				}
 			}
 		}
-		console.log(examples);
+		// console.log(examples);
 	});
 });
 

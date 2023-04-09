@@ -15,6 +15,6 @@ export default class DeviceOrientation {
     getScreenAdjustedMatrix(): import("./Rotation/Types").RotationMatrix;
     getScreenAdjustedEuler(): import("./Rotation/Types").EulerType;
     isAbsolute(): boolean;
-    getLastRawEventData(): any;
+    getLastRawEventData(): {};
 }
 //# sourceMappingURL=DeviceOrientation.d.ts.map
