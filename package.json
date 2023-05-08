@@ -1,12 +1,18 @@
 {
 	"name": "fulltilt-ts",
 	"title": "Full Tilt Typescript",
-	"version": "0.7.0",
+	"version": "0.0.1",
 	"description": "Standalone device orientation + device motion normalization and conversion library. Converted to Typescript from the original Javascript version.",
 	"author": {
-		"name": "Haris Skiadas"
+		"name": "Haris Skiadas <cskiadas@gmail.com>"
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/skiadas/Full-Tilt-ts"
+	},
+	"license": "MIT",
 	"keywords": [
+		"typescript",
 		"full tilt",
 		"fulltilt",
 		"deviceorientation",
