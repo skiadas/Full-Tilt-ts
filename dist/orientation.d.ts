@@ -15,6 +15,7 @@ export declare function activate(): Promise<{
     data: OrientationData;
 }>;
 export declare function listen(callback: (data: OrientationData) => void): void;
+export declare function stopListening(callback: (data: OrientationData) => void): void;
 export declare function start(): void;
 export declare function stop(): void;
 export declare function registerForScreenOrientationChange(): void;
@@ -24,6 +25,7 @@ declare const _default: {
     start: typeof start;
     stop: typeof stop;
     listen: typeof listen;
+    stopListening: typeof stopListening;
     registerForScreenOrientationChange: typeof registerForScreenOrientationChange;
 };
 export default _default;

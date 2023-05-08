@@ -1,0 +1,88 @@
+<html>
+
+<head>
+  <script type="application/javascript"
+    src="//cdn.rawgit.com/Alorel/console-log-html/master/console-log-html.min.js"></script>
+  <script src="fulltilt.min.js" type="text/javascript"></script>
+</head>
+
+<body>
+  <dialog id="permissionsDialog" open="open">
+    This page requires location and device orientation information. After clicking the button you will likely be
+    prompted to provide permission.
+    <button id="confirm">Activate!</button>
+  </dialog>
+  <h1>Hello there!</h1>
+  <video id="player" controls autoplay muted playsinline width="1" height="1"></video>
+  <div style="position: relative;">
+    <canvas id="canvas" width="320" height="240"></canvas>
+    <img id="compass" src="transparent.png" alt="" width="100px" height="100px">
+  </div>
+  <ul id="console-log"></ul>
+  <script>
+    let alpha = 30;
+    const image = document.getElementById("compass");
+    image.style.position = "absolute";
+    image.style.top = "0px";
+    image.style.bottom = "0px";
+    const canvas = document.getElementById('canvas');
+    canvas.style.position = "absolute";
+    const player = document.getElementById('player');
+    const context = canvas.getContext('2d');
+    let width = canvas.width;
+    let height = canvas.height;
+    const constraints = {
+      video: { facingMode: "environment" },
+    };
+
+    setInterval(() => {
+      try {
+        const cx = canvas.width;
+        const cy = canvas.height;
+        context.drawImage(player, 0, 0, cx, cy);
+        image.style.transform = `rotate(${alpha}deg)`;
+      } catch (error) {
+        console.log(error);
+      }
+    }, 100);
+
+    player.onloadedmetadata = () => {
+      width = player.videoWidth;
+      height = player.videoHeight;
+    }
+
+    // Attach the video stream to the video element and autoplay.
+    navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+      console.log("setting player");
+      const settings = stream.getVideoTracks()[0].getSettings();
+      // TODO: Check for outwards facing camera
+      player.srcObject = stream;
+    });
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("confirm").onclick = () => {
+        try {
+          window.FULLTILT.orientation.activate().then(e => {
+            document.getElementById("permissionsDialog").close();
+            e.listen(setFromData);
+          }).catch(e => document.body.insertAdjacentText("beforeend", "error! " + e.message));
+        } catch (e) {
+          document.body.insertAdjacentText("beforeend", "Error!: " + e.message);
+        }
+      }
+    });
+    function setFromData(data) {
+      alpha = data.screen.alpha;
+    }
+  </script>
+  <script>
+    // const ConsoleLogHTML = require('console-log-html');
+    ConsoleLogHTML.connect(document.getElementById("console-log"));
+  </script>
+  <p><a
+      href="https://www.freepik.com/free-vector/compass-design_917013.htm#query=compass%20svg&position=0&from_view=keyword&track=ais">Compass
+      Image
+      by evasplace</a> on Freepik</p>
+
+</body>
+
+</html>

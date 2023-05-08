@@ -1,3 +1,5 @@
+'use strict';
+
 /******************************************************************************
 Copyright (c) Microsoft Corporation.
 
@@ -69,6 +71,27 @@ function onlyOnce(f) {
         return value;
     };
 }
+///// Promise-based Sensor Data checker //////
+// TODO: Understand what this does
+function SensorCheck(sensorRootObj) {
+    var promise = new Promise(function (resolve, reject) {
+        var runCheck = function (tries) {
+            setTimeout(function () {
+                if (sensorRootObj && sensorRootObj.data) {
+                    resolve();
+                }
+                else if (tries >= 20) {
+                    reject();
+                }
+                else {
+                    runCheck(++tries);
+                }
+            }, 50);
+        };
+        runCheck(0);
+    });
+    return promise;
+}
 function keepTrying(tester, maxTries, millis) {
     if (millis === void 0) { millis = 500; }
     // Must keep trying on an interval
@@ -127,6 +150,16 @@ var isIOS = onlyOnce(function () {
     ].includes(navigator.platform) ||
         // iPad on iOS 13 detection
         (navigator.userAgent.includes("Mac") && "ontouchend" in document));
+});
+
+var utils = /*#__PURE__*/Object.freeze({
+    __proto__: null,
+    SensorCheck: SensorCheck,
+    isIOS: isIOS,
+    keepTrying: keepTrying,
+    onlyOnce: onlyOnce,
+    sign: sign,
+    throttle: throttle
 });
 
 var M_PI = Math.PI;
@@ -553,6 +586,12 @@ function activate() {
 function listen(callback) {
     callbacks.push(callback);
 }
+function stopListening(callback) {
+    var i = callbacks.indexOf(callback);
+    if (i > -1) {
+        callbacks.splice(i, 1);
+    }
+}
 function start() {
     if (status == Status.Inactive) {
         console.log("starting");
@@ -570,9 +609,10 @@ function stop() {
     }
 }
 var callCallbacks = throttle(function () {
+    var dataCopy = cloneData(data);
     for (var _i = 0, callbacks_1 = callbacks; _i < callbacks_1.length; _i++) {
         var c = callbacks_1[_i];
-        c.call(null, data);
+        c.call(null, dataCopy);
     }
 }, 250, null);
 function handleChange(event) {
@@ -629,8 +669,27 @@ var orientation = {
     start: start,
     stop: stop,
     listen: listen,
+    stopListening: stopListening,
     registerForScreenOrientationChange: registerForScreenOrientationChange,
 };
+function cloneData(data) {
+    var angle = data.angle, webkitHeading = data.webkitHeading, initialAngle = data.initialAngle, initial = data.initial, absolute = data.absolute, relative = data.relative;
+    return {
+        angle: angle,
+        webkitHeading: webkitHeading,
+        initialAngle: initialAngle,
+        initial: cloneAngle(initial),
+        absolute: cloneAngle(absolute),
+        relative: cloneAngle(relative),
+        get screen() {
+            return getScreenEuler();
+        },
+    };
+}
+function cloneAngle(_a) {
+    var alpha = _a.alpha, beta = _a.beta, gamma = _a.gamma;
+    return { alpha: alpha, beta: beta, gamma: gamma };
+}
 
 ///// FULLTILT API Root Object /////
 var FULLTILT = {
@@ -668,7 +727,8 @@ var FULLTILT = {
     // 	return promise;
     // },
     orientation: orientation,
+    utils: utils
 };
 
-export { FULLTILT as default };
-//# sourceMappingURL=fulltilt.min.js.map
+module.exports = FULLTILT;
+//# sourceMappingURL=fulltilt.cjs.js.map

@@ -98,6 +98,13 @@ export function listen(callback: (data: OrientationData) => void) {
 	callbacks.push(callback);
 }
 
+export function stopListening(callback: (data: OrientationData) => void) {
+	const i = callbacks.indexOf(callback);
+	if (i > -1) {
+		callbacks.splice(i, 1);
+	}
+}
+
 export function start() {
 	if (status == Status.Inactive) {
 		console.log("starting");
@@ -123,8 +130,9 @@ export function stop() {
 
 const callCallbacks = throttle(
 	() => {
+		const dataCopy = cloneData(data);
 		for (const c of callbacks) {
-			c.call(null, data);
+			c.call(null, dataCopy);
 		}
 	},
 	250,
@@ -195,5 +203,25 @@ export default {
 	start,
 	stop,
 	listen,
+	stopListening,
 	registerForScreenOrientationChange,
 };
+function cloneData(data: OrientationData): OrientationData {
+	const { angle, webkitHeading, initialAngle, initial, absolute, relative } =
+		data;
+	return {
+		angle,
+		webkitHeading,
+		initialAngle,
+		initial: cloneAngle(initial),
+		absolute: cloneAngle(absolute),
+		relative: cloneAngle(relative),
+		get screen() {
+			return getScreenEuler();
+		},
+	};
+}
+
+function cloneAngle({ alpha, beta, gamma }) {
+	return { alpha, beta, gamma };
+}

@@ -1,9 +1,11 @@
-Full Tilt
-==========
+Full Tilt in Typescript
+=======================
 
 THIS DOCUMENT IS NOT UP TO DATE.
 
 The library is in the process of being created. The document will update ones things stabilize.
+
+Everything that follows is from the original Full Tilt project and is likely not applicable to this.
 
 #### Standalone device orientation + motion detection, normalization and conversion library ####
 

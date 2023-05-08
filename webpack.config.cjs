@@ -3,19 +3,25 @@ const FileManagerPlugin = require("filemanager-webpack-plugin");
 const path = require("path");
 
 module.exports = {
-	mode: "development",
-	entry: "./src/Core.ts",
-	devtool: "inline-source-map",
+	experiments: {
+		outputModule: true
+	},
+	mode: "production",
+	entry: {
+		fulltilt: "./src/Core.ts",
+		"fulltilt.min": "./src/Core.ts",
+	},
+	devtool: "source-map",
 	output: {
-		filename: "fulltilt.min.js",
 		path: path.resolve(__dirname, "dist"),
-		clean: true,
+		filename: '[name].js',
+		clean: false,
 		globalObject: "this",
 		library: {
-			name: "FULLTILT",
-			type: "umd",
+			type: "module",
 			export: "default",
 		},
+		umdNamedDefine: true,
 	},
 	devServer: {
 		static: ["."],
@@ -40,7 +46,11 @@ module.exports = {
 					copy: [
 						{
 							source: path.resolve(__dirname, "dist", "fulltilt.min.js"),
-							destination: path.resolve(__dirname, "docs/examples", "fulltilt.min.js"),
+							destination: path.resolve(
+								__dirname,
+								"docs/examples",
+								"fulltilt.min.js"
+							),
 						},
 					],
 				},

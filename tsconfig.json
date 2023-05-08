@@ -1,14 +1,16 @@
 {
-  "include": ["src/**/*"],
-  "compilerOptions": {
-    "moduleResolution": "node",
-    "allowJs": true,
-    "declaration": true,
-    "sourceMap": true,
-    "outDir": "dist",
-    "declarationMap": true,
-    "module": "ES6",
-    "target": "ES5",
-    "lib": ["ES2015", "DOM"]
-  }
+	"include": ["src/**/*"],
+	"exclude": ["src/**/*.test.ts"],
+	"compilerOptions": {
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"allowJs": true,
+		"declaration": true,
+		"sourceMap": true,
+		"outDir": "dist",
+		"declarationMap": true,
+		"module": "ES6",
+		"target": "ES5",
+		"lib": ["ES2015", "DOM"]
+	}
 }

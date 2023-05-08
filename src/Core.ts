@@ -1,5 +1,6 @@
 ///// FULLTILT API Root Object /////
 import orientation from "./orientation";
+import * as utils from "./Utils";
 import { DeviceMotion } from "./DeviceMotion";
 import DeviceOrientation from "./DeviceOrientation";
 import { SensorCheck } from "./Utils";
@@ -40,6 +41,7 @@ const FULLTILT = {
 	// 	return promise;
 	// },
 	orientation: orientation,
+	utils: utils
 };
 
 export default FULLTILT;
